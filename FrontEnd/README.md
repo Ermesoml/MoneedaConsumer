@@ -1,6 +1,6 @@
-# frontend
+# Moneeda Consumer Frontend
 
-> Moneeda consumer FrontEnd.
+> An VueJS application that shows the products and prices from Moneeda Consumer Backend.
 
 ## Build Setup
 

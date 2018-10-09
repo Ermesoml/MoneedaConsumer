@@ -1,28 +1,16 @@
-# Adonis API application
+# Moneeda Consumer Backend
 
-This is the boilerplate for creating an API server in AdonisJs, it comes pre-configured with.
-
-1. Bodyparser
-2. Authentication
-3. CORS
-4. Lucid ORM
-5. Migrations and seeds
+> An AdonisJS application that “flips around” the data avalilable through Moneeda API.
 
 ## Setup
 
-Use the adonis command to install the blueprint
+1. Rename the .env.example file to .env;
+2. Run npm install;
+3. Run npm start.
 
-```bash
-adonis new yardstick --api-only
-```
+## Endpoints
 
-or manually clone the repo and then run `npm install`.
+There are two endpoints available:
 
-
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
-adonis migration:run
-```
+- /products: returns returns all products shared between the exchanges;
+- /products/PRODUCT/prices: returns PRODUCT’s prices on all three exchanges.
