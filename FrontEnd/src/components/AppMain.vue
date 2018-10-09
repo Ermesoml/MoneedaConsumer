@@ -1,47 +1,82 @@
 <template>
   <div class="app-main">
     <div class="container-fluid">
-      <h1>Wellcome!</h1>
-      <v-select v-model="productSelected" @input="showProductPrices" :options="products"></v-select>
-      <div class="row m-2">
+      
+      <h1>Wellcome to Moneeda Consumer Frontend!</h1>
+      <p>All products shared between Bittrex, Binance and Bitfinex</p>
+
+      <div class="alert alert-primary m-2" v-if="loadingProducts">
+        <i class="fa fa-sync-alt fa-spin"></i> Loading products
+      </div>
+      <v-select v-model="productSelected" @input="showProductPrices" :options="products" placeholder="Search for products" v-else></v-select>
+
+      <div class="alert alert-primary m-2" v-if="loadingPrices">
+        <i class="fa fa-sync-alt fa-spin"></i> Loading prices
+      </div>
+      <div class="row m-2" v-else>
         <div class="col-md-4" v-for="price in prices">
-          <div class="card" style="width: 100%;">
-            <!-- <img class="card-img-top" src=".../100px180/" alt="Card image cap"> -->
+          <div :class="getProductCardClass(price)" style="width: 100%;">
+            <div class="card-header">
+              <h4 class="my-0 font-weight-normal">{{price.exchange}}</h4>
+            </div>
             <div class="card-body">
-              <h5 class="card-title">{{price.exchange}}</h5>
               <p class="card-text">{{price.price.price}}</p>
             </div>
           </div>
         </div>
       </div>
+      
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'AppMain',
   data () {
     return {
-      processing: false,
+      loadingProducts: false,
+      loadingPrices: false,
       products: [],
       productSelected: '',
       prices: [],
+      minPrice: {},
+      maxPrice: {},
     }
   },
   mounted(){
+    this.loadingProducts = true;
     this.axios.get('http://localhost:3333/products').then((res) => {
       this.products = res.data;
+      this.loadingProducts = false;
     })
   },
   methods: {
     showProductPrices(){
-      if (!this.productSelected)
+      this.loadingPrices = true;
+      this.clearValues();
+      if (!this.productSelected){
+        this.loadingPrices = false;
         return;
+      }
 
       this.axios.get(`http://localhost:3333/products/${this.productSelected}/prices`).then((res) => {
+        this.maxPrice = res.data.reduce((prev, current) => (prev.price.price > current.price.price) ? prev : current)
+        this.minPrice = res.data.reduce((prev, current) => (prev.price.price <= current.price.price) ? prev : current)
         this.prices = res.data;
+        this.loadingPrices = false;
       })
+    },
+    getProductCardClass(price){
+      let commonClasses = 'card mb-4 shadow-sm ';
+      commonClasses += price.exchange === this.maxPrice.exchange ? 'max-price' : price.exchange === this.minPrice.exchange ? 'min-price' : 'common-price';
+      return commonClasses;
+    },
+    clearValues(){
+      this.prices = [];
+      this.minPrice = {};
+      this.maxPrice = {};
     }
   }
 }
@@ -66,5 +101,25 @@ export default {
 
   .container {
     padding: 2px 16px;
+  }
+
+  .max-price{
+    color: red;
+  }
+
+  .min-price{
+    color: green;
+    border-color: green;
+  }
+
+  .container-fluid {
+    text-align:center;
+    padding: auto;
+    margin: 20% auto;
+  }
+
+  .v-select{
+    max-width: 300px;
+    margin: 0 auto;
   }
 </style>

@@ -39,10 +39,17 @@ class ProductController {
     var prices = [];
 
     for (let i = 0; i < exchangesSuported.length; i++) {
-      prices.push({
-        exchange: exchangesSuported[i].name,
-        price: await axios.get(`/${exchangesSuported[i].name}/ticker?product=${product}`).then(res => res.data)
-      });
+      try {
+        prices.push({
+          exchange: exchangesSuported[i].name,
+          price: await axios.get(`/${exchangesSuported[i].name}/ticker?product=${product}`).then(res => res.data)
+        });
+      } catch (error) {
+        prices.push({
+          exchange: exchangesSuported[i].name,
+          price: 'Unavailable'
+        })
+      }
     }
  
     return prices;
