@@ -22,3 +22,4 @@ Route.get('/', () => {
 
 Route.post('/autenticate', 'AuthController.autenticate');
 Route.get('/products/', 'ProductController.getAllProducts');
+Route.get('/products/:product/prices', 'ProductController.getProductPrices');
