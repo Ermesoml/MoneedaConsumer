@@ -103,11 +103,11 @@ export default {
     padding: 2px 16px;
   }
 
-  .max-price{
+  .min-price{
     color: red;
   }
 
-  .min-price{
+  .max-price{
     color: green;
     border-color: green;
   }
